@@ -1,0 +1,49 @@
+name: Lint and Format Code
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || github.ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Run linter and formatter
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]]; then
+            echo "External fork PR detected. Running format check only."
+            ./scripts/lint.sh
+          else
+            echo "Internal PR or push event. Running format and commit."
+            ./scripts/lint.sh --fix
+
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add -A
+            if git diff --exit-code --staged; then
+              echo "No changes to commit"
+            else
+              git commit -m "[GitHub Action] Lint and format code with Ruff"
+              git push
+            fi
+          fi

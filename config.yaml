@@ -1,0 +1,13 @@
+# Weco run settings read by ./scripts/weco.sh.
+# Change this file instead of prefixing commands with shell environment vars.
+# For leaderboard submissions, only solution.py is submitted; this config only
+# controls how Weco is launched.
+
+weco_source: solution.py
+weco_instructions: instructions/weco_instructions.md
+weco_metric: val_bpb
+weco_goal: minimize
+weco_steps: 20
+# Outer Weco shell timeout. Modal still enforces 60s train + 60s artifact/eval.
+weco_eval_timeout: 210
+weco_model: ""

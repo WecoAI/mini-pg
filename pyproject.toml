@@ -1,0 +1,38 @@
+[project]
+name = "mini-pg"
+version = "0.1.0"
+description = "Mini Parameter Golf workshop scaffold with Weco and Modal-backed evaluation."
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+dependencies = [
+    "modal>=1.0.0",
+    "weco>=0.3.39",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.11.0",
+]
+
+[tool.ruff]
+fix = false
+include = ["*.py"]
+exclude = [".git"]
+force-exclude = true
+respect-gitignore = true
+indent-width = 4
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E402", "E501"]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.ruff.format]
+docstring-code-format = true
+indent-style = "space"
+quote-style = "double"
+skip-magic-trailing-comma = true
